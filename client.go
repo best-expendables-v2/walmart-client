@@ -15,16 +15,17 @@ import (
 )
 
 type Client struct {
-	httpClient *http.Client
-	Config     Config
-	Token      *Token
+	httpClient    *http.Client
+	beforeRequest []func(ctx context.Context, c *Client) error
+	Config        Config
+	Token         *Token
 
 	InventoryService
 	AuthService
 	OrderService
 }
 
-func NewClient(client *http.Client, conf Config) *Client {
+func NewClient(client *http.Client, conf Config, callbacks ...Callback) *Client {
 	c := &Client{
 		httpClient: client,
 		Config:     conf,
@@ -33,6 +34,10 @@ func NewClient(client *http.Client, conf Config) *Client {
 	c.InventoryService = NewInventoryService(c)
 	c.AuthService = NewAuthService(c)
 	c.OrderService = NewOrderService(c)
+
+	for _, callback := range callbacks {
+		callback(c)
+	}
 	return c
 }
 
@@ -41,7 +46,7 @@ type Token struct {
 	ExpireAt    time.Time
 }
 
-func (c Client) doRequest(ctx context.Context, method string, uri string, options interface{}, content interface{}) (*Response, error) {
+func (c *Client) doRequest(ctx context.Context, method string, uri string, options interface{}, content interface{}) (*Response, error) {
 	u := c.getURL(uri)
 	var err error
 	if options != nil {
@@ -67,6 +72,9 @@ func (c Client) doRequest(ctx context.Context, method string, uri string, option
 		}
 	} else {
 		bodyBytes = nil
+	}
+	for _, beforeRequest := range c.beforeRequest {
+		beforeRequest(ctx, c)
 	}
 	return c.sendRequest(ctx, method, u.String(), bodyBytes, c.GetRequestHeaders())
 }
@@ -121,18 +129,18 @@ func (c Client) getURL(uri string) *url.URL {
 	return baseURL.ResolveReference(rel)
 }
 
-func (c Client) Get(ctx context.Context, uri string, options interface{}) (*Response, error) {
+func (c *Client) Get(ctx context.Context, uri string, options interface{}) (*Response, error) {
 	return c.doRequest(ctx, http.MethodGet, uri, options, nil)
 }
 
-func (c Client) Post(ctx context.Context, uri string, content interface{}) (*Response, error) {
+func (c *Client) Post(ctx context.Context, uri string, content interface{}) (*Response, error) {
 	return c.doRequest(ctx, http.MethodPost, uri, nil, content)
 }
 
-func (c Client) Put(ctx context.Context, uri string, content interface{}) (*Response, error) {
+func (c *Client) Put(ctx context.Context, uri string, content interface{}) (*Response, error) {
 	return c.doRequest(ctx, http.MethodPut, uri, nil, content)
 }
 
-func (c Client) Delete(ctx context.Context, uri string, content interface{}) (*Response, error) {
+func (c *Client) Delete(ctx context.Context, uri string, content interface{}) (*Response, error) {
 	return c.doRequest(ctx, http.MethodDelete, uri, nil, nil)
 }

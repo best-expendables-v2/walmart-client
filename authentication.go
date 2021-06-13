@@ -68,8 +68,9 @@ type GetTokenDetailResponse struct {
 	} `json:"scopes"`
 }
 
-func (s authService) GetTokenDetail(ctx context.Context) (*GetTokenDetailResponse, error) {
-	response, err := s.client.Get(ctx, GetTokenDetailBasePath, nil)
+func (c authService) GetTokenDetail(ctx context.Context) (*GetTokenDetailResponse, error) {
+	url := c.client.getURL(GetTokenDetailBasePath)
+	response, err := c.client.sendRequest(ctx, http.MethodGet, url.String(), nil, c.client.GetRequestHeaders())
 	if err != nil {
 		return nil, err
 	}

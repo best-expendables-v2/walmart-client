@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"testing"
+	"time"
 
 	walmart_client "github.com/best-expendables-v2/walmart-client"
 	"github.com/best-expendables-v2/walmart-client/order_dto"
@@ -20,6 +21,29 @@ var (
 	}
 	client = walmart_client.NewClient(http.DefaultClient, conf)
 )
+
+func TestClient_New(t *testing.T) {
+	checkAuth := func (ctx context.Context, c *walmart_client.Client) error  {
+		buffer := time.Minute
+		if c.Token == nil || time.Now().Add(buffer).After(c.Token.ExpireAt) {
+			token, err := c.Authenticate(ctx)
+			if err != nil {
+				return err
+			}
+			c.SetAccessToken(token.AccessToken, nil)
+			tokenDetail, err := c.GetTokenDetail(ctx)
+			if err != nil {
+				return err
+			}
+			c.SetAccessToken(token.AccessToken, &tokenDetail.ExpireAt)
+		}
+		return nil
+	}
+	newClient := walmart_client.NewClient(http.DefaultClient, conf, walmart_client.BeforeRequest(checkAuth))
+	resp, err := newClient.Acknowledge(ctx, "1796277083022")
+	assert.NoError(t, err, "Unexpected error")
+	assert.Equal(t, "1796277083022", resp.Order.PurchaseOrderID)
+}
 
 func TestClient_Authenticate(t *testing.T) {
 	_, err := client.Authenticate(ctx)
