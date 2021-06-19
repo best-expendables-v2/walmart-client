@@ -16,8 +16,10 @@ type Order struct {
 
 type OrderLines struct {
 	OrderLine []struct {
-		LineNumber        string  `json:"lineNumber"`
-		SellerOrderID     *string `json:"sellerOrderId,omitempty"`
+		LineNumber        string            `json:"lineNumber"`
+		Item              Item              `json:"item"`
+		OrderLineQuantity OrderLineQuantity `json:"orderLineQuantity"`
+		SellerOrderID     *string           `json:"sellerOrderId,omitempty"`
 		OrderLineStatuses struct {
 			OrderLineStatus []struct {
 				Status string `json:"status"`
@@ -71,4 +73,19 @@ type ShippingInfo struct {
 		Country     string `json:"country"`
 		AddressType string `json:"addressType"`
 	} `json:"postalAddress"`
+}
+
+type Item struct {
+	ProductName string `json:"productName"`
+	Sku         string `json:"sku"`
+	ImageURL    string `json:"imageUrl"`
+	Weight      struct {
+		Value string `json:"value"`
+		Unit  string `json:"unit"`
+	} `json:"weight"`
+}
+
+type OrderLineQuantity struct {
+	UnitOfMeasurement string `json:"unitOfMeasurement"`
+	Amount            string `json:"amount"`
 }
