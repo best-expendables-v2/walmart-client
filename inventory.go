@@ -12,8 +12,8 @@ const (
 )
 
 type InventoryService interface {
-	Get(ctx context.Context, params inventory_dto.InventoryGetParams) (*inventory_dto.InventoryResponse, error)
-	Update(ctx context.Context, content inventory_dto.InventoryUpdatePayload) (*inventory_dto.InventoryResponse, error)
+	GetInventory(ctx context.Context, params inventory_dto.InventoryGetParams) (*inventory_dto.InventoryResponse, error)
+	UpdateInventory(ctx context.Context, content inventory_dto.InventoryUpdatePayload) (*inventory_dto.InventoryResponse, error)
 }
 
 type inventoryService struct {
@@ -24,7 +24,7 @@ func NewInventoryService(client *Client) InventoryService {
 	return &inventoryService{client: client}
 }
 
-func (s inventoryService) Get(ctx context.Context, params inventory_dto.InventoryGetParams) (*inventory_dto.InventoryResponse, error) {
+func (s inventoryService) GetInventory(ctx context.Context, params inventory_dto.InventoryGetParams) (*inventory_dto.InventoryResponse, error) {
 	response, err := s.client.Get(ctx, GetInventoryBasePath, params)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func (s inventoryService) Get(ctx context.Context, params inventory_dto.Inventor
 	return &res, err
 }
 
-func (s inventoryService) Update(ctx context.Context, content inventory_dto.InventoryUpdatePayload) (*inventory_dto.InventoryResponse, error) {
+func (s inventoryService) UpdateInventory(ctx context.Context, content inventory_dto.InventoryUpdatePayload) (*inventory_dto.InventoryResponse, error) {
 	response, err := s.client.Post(ctx, UpdateInventoryBasePath, content)
 	if err != nil {
 		return nil, err
