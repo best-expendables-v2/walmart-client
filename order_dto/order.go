@@ -12,7 +12,7 @@ type Order struct {
 	OrderDate       int64        `json:"orderDate"`
 	ShippingInfo    ShippingInfo `json:"shippingInfo"`
 	OrderLines      OrderLines   `json:"orderLines"`
-	ShipNode        ShipNode     `json:"shipNode"`
+	ShipNode        *ShipNode    `json:"shipNode"`
 }
 
 type OrderLines struct {
