@@ -12,6 +12,7 @@ type Order struct {
 	OrderDate       int64        `json:"orderDate"`
 	ShippingInfo    ShippingInfo `json:"shippingInfo"`
 	OrderLines      OrderLines   `json:"orderLines"`
+	ShipNode        ShipNode     `json:"shipNode"`
 }
 
 type OrderLines struct {
@@ -90,4 +91,10 @@ type Item struct {
 type OrderLineQuantity struct {
 	UnitOfMeasurement string `json:"unitOfMeasurement"`
 	Amount            string `json:"amount"`
+}
+
+type ShipNode struct {
+	Type string `json:"type"`
+	Name string `json:"name"`
+	ID   string `json:"id"`
 }

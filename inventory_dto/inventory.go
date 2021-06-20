@@ -4,7 +4,7 @@ type InventoryResponse struct {
 	Sku      string `json:"sku"`
 	Quantity struct {
 		Unit   string
-		Amount int
+		Amount int64
 	} `json:"quantity"`
 }
 
@@ -15,6 +15,6 @@ type InventoryGetParams struct {
 
 type InventoryUpdatePayload struct {
 	Sku      string  `json:"sku"`
-	Quantity int     `json:"quantity"`
+	Quantity int64   `json:"quantity"`
 	ShipNode *string `json:"shipNode,omitempty"`
 }
