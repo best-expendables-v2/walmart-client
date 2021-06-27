@@ -8,15 +8,17 @@ import (
 )
 
 const (
-	AcknowledgeOrderBasePath = "/v3/orders/%s/acknowledge"
-	ShipOrderBasePath        = "/v3/orders/%s/shipping"
-	CancelOrderBasePath      = "/v3/orders/%s/cancel"
+	AcknowledgeOrderBasePath  = "/v3/orders/%s/acknowledge"
+	ShipOrderBasePath         = "/v3/orders/%s/shipping"
+	CancelOrderBasePath       = "/v3/orders/%s/cancel"
+	GetReleasedOrdersBasePath = "/v3/orders/released"
 )
 
 type OrderService interface {
 	Acknowledge(ctx context.Context, purchaseOrderID string) (*order_dto.OrderResponse, error)
 	Ship(ctx context.Context, purchaseOrderID string, payload order_dto.OrderShipmentPayload) (*order_dto.OrderResponse, error)
 	Cancel(ctx context.Context, purchaseOrderID string, payload order_dto.OrderCancellationPayload) (*order_dto.OrderResponse, error)
+	GetReleasedOrders(ctx context.Context, params *order_dto.GetReleasedOrdersParams, nextCursor *string) (*order_dto.ReleasedOrdersResponse, error)
 }
 
 type orderService struct {
@@ -53,6 +55,23 @@ func (s orderService) Cancel(ctx context.Context, purchaseOrderID string, payloa
 		return nil, err
 	}
 	var res order_dto.OrderResponse
+	err = response.Decode(&res)
+	return &res, err
+}
+
+func (s orderService) GetReleasedOrders(ctx context.Context, params *order_dto.GetReleasedOrdersParams, nextCursor *string) (*order_dto.ReleasedOrdersResponse, error) {
+	path := GetReleasedOrdersBasePath
+	var options interface{} = nil
+	if nextCursor != nil && *nextCursor != "" {
+		path = GetReleasedOrdersBasePath + *nextCursor
+		options = params
+	}
+
+	response, err := s.client.Get(ctx, path, options)
+	if err != nil {
+		return nil, err
+	}
+	var res order_dto.ReleasedOrdersResponse
 	err = response.Decode(&res)
 	return &res, err
 }
