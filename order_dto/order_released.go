@@ -15,16 +15,3 @@ type GetReleasedOrdersParams struct {
 	ReplacementInfo      string `json:"replacementInfo,omitempty"`
 	OrderType            string `json:"orderType,omitempty"`
 }
-
-type ReleasedOrdersResponse struct {
-	List struct {
-		Meta struct {
-			TotalCount int    `json:"totalCount"`
-			Limit      int    `json:"limit"`
-			NextCursor string `json:"nextCursor"`
-		} `json:"meta"`
-		Elements struct {
-			Order []Order `json:"order"`
-		} `json:"elements"`
-	} `json:"list"`
-}

@@ -4,6 +4,19 @@ type OrderResponse struct {
 	Order Order `json:"order"`
 }
 
+type OrdersResponse struct {
+	List struct {
+		Meta struct {
+			TotalCount int    `json:"totalCount"`
+			Limit      int    `json:"limit"`
+			NextCursor string `json:"nextCursor"`
+		} `json:"meta"`
+		Elements struct {
+			Order []Order `json:"order"`
+		} `json:"elements"`
+	} `json:"list"`
+}
+
 type Order struct {
 	PurchaseOrderID string       `json:"purchaseOrderId"`
 	CustomerOrderID string       `json:"customerOrderId"`

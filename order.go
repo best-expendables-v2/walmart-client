@@ -12,13 +12,15 @@ const (
 	ShipOrderBasePath         = "/v3/orders/%s/shipping"
 	CancelOrderBasePath       = "/v3/orders/%s/cancel"
 	GetReleasedOrdersBasePath = "/v3/orders/released"
+	GetAllOrdersBasePath      = "/v3/orders"
 )
 
 type OrderService interface {
 	Acknowledge(ctx context.Context, purchaseOrderID string) (*order_dto.OrderResponse, error)
 	Ship(ctx context.Context, purchaseOrderID string, payload order_dto.OrderShipmentPayload) (*order_dto.OrderResponse, error)
 	Cancel(ctx context.Context, purchaseOrderID string, payload order_dto.OrderCancellationPayload) (*order_dto.OrderResponse, error)
-	GetReleasedOrders(ctx context.Context, params *order_dto.GetReleasedOrdersParams, nextCursor *string) (*order_dto.ReleasedOrdersResponse, error)
+	GetReleasedOrders(ctx context.Context, params *order_dto.GetReleasedOrdersParams, nextCursor *string) (*order_dto.OrdersResponse, error)
+	GetAllOrders(ctx context.Context, params *order_dto.GetAllOrdersParams, nextCursor *string) (*order_dto.OrdersResponse, error)
 }
 
 type orderService struct {
@@ -59,7 +61,7 @@ func (s orderService) Cancel(ctx context.Context, purchaseOrderID string, payloa
 	return &res, err
 }
 
-func (s orderService) GetReleasedOrders(ctx context.Context, params *order_dto.GetReleasedOrdersParams, nextCursor *string) (*order_dto.ReleasedOrdersResponse, error) {
+func (s orderService) GetReleasedOrders(ctx context.Context, params *order_dto.GetReleasedOrdersParams, nextCursor *string) (*order_dto.OrdersResponse, error) {
 	path := GetReleasedOrdersBasePath
 	var options interface{} = nil
 	if nextCursor != nil && *nextCursor != "" {
@@ -71,7 +73,24 @@ func (s orderService) GetReleasedOrders(ctx context.Context, params *order_dto.G
 	if err != nil {
 		return nil, err
 	}
-	var res order_dto.ReleasedOrdersResponse
+	var res order_dto.OrdersResponse
+	err = response.Decode(&res)
+	return &res, err
+}
+
+func (s orderService) GetAllOrders(ctx context.Context, params *order_dto.GetAllOrdersParams, nextCursor *string) (*order_dto.OrdersResponse, error) {
+	path := GetAllOrdersBasePath
+	var options interface{} = nil
+	if nextCursor != nil && *nextCursor != "" {
+		path = path + *nextCursor
+		options = params
+	}
+
+	response, err := s.client.Get(ctx, path, options)
+	if err != nil {
+		return nil, err
+	}
+	var res order_dto.OrdersResponse
 	err = response.Decode(&res)
 	return &res, err
 }
