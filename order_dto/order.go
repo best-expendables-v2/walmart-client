@@ -33,8 +33,25 @@ type OrderLines struct {
 }
 
 type OrderLine struct {
-	LineNumber        string            `json:"lineNumber"`
-	Item              Item              `json:"item"`
+	LineNumber string `json:"lineNumber"`
+	Item       Item   `json:"item"`
+	Charges    struct {
+		Charge []struct {
+			ChargeType   string `json:"chargeType"`
+			ChargeName   string `json:"chargeName"`
+			ChargeAmount struct {
+				Currency string `json:"currency"`
+				Amount   int    `json:"amount"`
+			} `json:"chargeAmount"`
+			Tax struct {
+				TaxName   string `json:"taxName"`
+				TaxAmount struct {
+					Currency string `json:"currency"`
+					Amount   int    `json:"amount"`
+				} `json:"taxAmount"`
+			} `json:"tax"`
+		} `json:"charge"`
+	} `json:"charges"`
 	OrderLineQuantity OrderLineQuantity `json:"orderLineQuantity"`
 	SellerOrderID     *string           `json:"sellerOrderId,omitempty"`
 	OrderLineStatuses struct {
