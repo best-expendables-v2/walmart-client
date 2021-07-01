@@ -25,6 +25,7 @@ type Order struct {
 	OrderDate       int64        `json:"orderDate"`
 	ShippingInfo    ShippingInfo `json:"shippingInfo"`
 	OrderLines      OrderLines   `json:"orderLines"`
+	OrderSummary    OrderSummary `json:"orderSummary"`
 	ShipNode        *ShipNode    `json:"shipNode"`
 }
 
@@ -127,4 +128,18 @@ type ShipNode struct {
 	Type string `json:"type"`
 	Name string `json:"name"`
 	ID   string `json:"id"`
+}
+
+type OrderSummary struct {
+	TotalAmount struct {
+		CurrencyAmount int    `json:"currencyAmount"`
+		CurrencyUnit   string `json:"currencyUnit"`
+	} `json:"totalAmount"`
+	OrderSubTotals []struct {
+		SubTotalType string `json:"subTotalType"`
+		TotalAmount  struct {
+			CurrencyAmount int    `json:"currencyAmount"`
+			CurrencyUnit   string `json:"currencyUnit"`
+		} `json:"totalAmount"`
+	} `json:"orderSubTotals"`
 }
