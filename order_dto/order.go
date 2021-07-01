@@ -132,14 +132,14 @@ type ShipNode struct {
 
 type OrderSummary struct {
 	TotalAmount struct {
-		CurrencyAmount int    `json:"currencyAmount"`
-		CurrencyUnit   string `json:"currencyUnit"`
+		CurrencyAmount float64 `json:"currencyAmount"`
+		CurrencyUnit   string  `json:"currencyUnit"`
 	} `json:"totalAmount"`
 	OrderSubTotals []struct {
 		SubTotalType string `json:"subTotalType"`
 		TotalAmount  struct {
-			CurrencyAmount int    `json:"currencyAmount"`
-			CurrencyUnit   string `json:"currencyUnit"`
+			CurrencyAmount float64 `json:"currencyAmount"`
+			CurrencyUnit   string  `json:"currencyUnit"`
 		} `json:"totalAmount"`
 	} `json:"orderSubTotals"`
 }
