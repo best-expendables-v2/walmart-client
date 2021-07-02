@@ -41,14 +41,14 @@ type OrderLine struct {
 			ChargeType   string `json:"chargeType"`
 			ChargeName   string `json:"chargeName"`
 			ChargeAmount struct {
-				Currency string `json:"currency"`
-				Amount   int    `json:"amount"`
+				Currency string  `json:"currency"`
+				Amount   float64 `json:"amount"`
 			} `json:"chargeAmount"`
 			Tax struct {
 				TaxName   string `json:"taxName"`
 				TaxAmount struct {
-					Currency string `json:"currency"`
-					Amount   int    `json:"amount"`
+					Currency string  `json:"currency"`
+					Amount   float64 `json:"amount"`
 				} `json:"taxAmount"`
 			} `json:"tax"`
 		} `json:"charge"`
