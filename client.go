@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"moul.io/http2curl"
 	"net/http"
 	"net/url"
 	"time"
@@ -61,11 +60,8 @@ func (c *Client) doRequest(ctx context.Context, method string, uri string, optio
 		if err != nil {
 			return nil, err
 		}
-		fmt.Printf("call here %v\n", optionsQuery)
-
 		for k, values := range u.Query() {
 			for _, v := range values {
-				fmt.Printf("call here %v\n", v)
 				optionsQuery.Add(k, v)
 			}
 		}
@@ -93,8 +89,6 @@ func (c Client) sendRequest(ctx context.Context, method string, api string, cont
 	}
 	request = request.WithContext(ctx)
 	request.Header = headers
-	command, _ := http2curl.GetCurlCommand(request)
-	fmt.Println(command)
 	resp, err := c.httpClient.Do(request)
 	if err != nil {
 		return nil, err
