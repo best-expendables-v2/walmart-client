@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"moul.io/http2curl"
 	"net/http"
 	"net/url"
 	"time"
@@ -23,6 +24,8 @@ type Client struct {
 	InventoryService
 	AuthService
 	OrderService
+	FeedService
+	FulfillmentService
 }
 
 func NewClient(client *http.Client, conf Config, callbacks ...Callback) *Client {
@@ -34,6 +37,8 @@ func NewClient(client *http.Client, conf Config, callbacks ...Callback) *Client 
 	c.InventoryService = NewInventoryService(c)
 	c.AuthService = NewAuthService(c)
 	c.OrderService = NewOrderService(c)
+	c.FeedService = NewFeedService(c)
+	c.FulfillmentService = NewFulfillmentService(c)
 
 	for _, callback := range callbacks {
 		callback(c)
@@ -50,15 +55,17 @@ func (c *Client) doRequest(ctx context.Context, method string, uri string, optio
 	u := c.getURL(uri)
 	var err error
 	if options != nil {
-		var optionsQuery url.Values
-		var schemaEncoder = schema.NewEncoder()
+		optionsQuery := make(url.Values, 0)
+		schemaEncoder := schema.NewEncoder()
 		err = schemaEncoder.Encode(options, optionsQuery)
 		if err != nil {
 			return nil, err
 		}
+		fmt.Printf("call here %v\n", optionsQuery)
 
 		for k, values := range u.Query() {
 			for _, v := range values {
+				fmt.Printf("call here %v\n", v)
 				optionsQuery.Add(k, v)
 			}
 		}
@@ -86,8 +93,9 @@ func (c Client) sendRequest(ctx context.Context, method string, api string, cont
 	}
 	request = request.WithContext(ctx)
 	request.Header = headers
+	command, _ := http2curl.GetCurlCommand(request)
+	fmt.Println(command)
 	resp, err := c.httpClient.Do(request)
-
 	if err != nil {
 		return nil, err
 	}
