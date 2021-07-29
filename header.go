@@ -37,6 +37,6 @@ func (c *Client) SetAccessToken(accessToken string, expireAt *string) {
 		if err != nil {
 			panic(err)
 		}
-		c.Token.ExpireAt = time.Unix(nanoTime / 1000, 0)
+		c.Token.ExpireAt = time.Unix(nanoTime/1000, 0)
 	}
 }
