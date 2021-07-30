@@ -18,15 +18,9 @@ type SupplierItem struct {
 	Orderable `json:"Orderable"`
 	TradeItem `json:"TradeItem"`
 }
-type Visible struct {
-	ElectronicsAccessories `json:"Electronics Accessories"`
-}
-type ElectronicsAccessories struct {
-	ManufacturerPartNumber string `json:"manufacturerPartNumber"`
-	MainImageUrl           string `json:"mainImageUrl"`
-	Prop65WarningText      string `json:"prop65WarningText"`
-	Manufacturer           string `json:"manufacturer"`
-}
+
+type Visible map[string]CategoryAttributes
+
 type Orderable struct {
 	HasBatteries                string `json:"hasBatteries"`
 	BatteryTechnologyType       string `json:"batteryTechnologyType"`

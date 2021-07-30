@@ -3,11 +3,12 @@ package walmart_client_test
 import (
 	"context"
 	"fmt"
-	"github.com/best-expendables-v2/walmart-client/feed_dto"
-	"github.com/best-expendables-v2/walmart-client/fulfillment_dto"
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/best-expendables-v2/walmart-client/feed_dto"
+	"github.com/best-expendables-v2/walmart-client/fulfillment_dto"
 
 	walmart_client "github.com/best-expendables-v2/walmart-client"
 	"github.com/best-expendables-v2/walmart-client/order_dto"
@@ -215,7 +216,7 @@ func TestClient_FeedConvertItemsForWFS(t *testing.T) {
 		SupplierItem: []feed_dto.SupplierItem{
 			{
 				Visible: feed_dto.Visible{
-					ElectronicsAccessories: feed_dto.ElectronicsAccessories{
+					"Electronics Accessories": feed_dto.CategoryAttributes{
 						ManufacturerPartNumber: "234566",
 						MainImageUrl:           "http://example.com/lf/71192763.jpg",
 						Prop65WarningText:      "some text",
